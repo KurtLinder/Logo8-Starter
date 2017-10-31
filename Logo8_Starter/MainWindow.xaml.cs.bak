@@ -14,36 +14,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
-using System.Windows.Threading;
 
 namespace Logo8_Starter
 {
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
-    /// 
-    public static class ExtensionMethods
-    {
-        private static Action EmptyDelegate = delegate () { };
-
-        public static void Refresh(this UIElement uiElement)
-        {
-            try
-            {
-                uiElement.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
-            }
-            catch (Exception exp)
-            {
-
-            }
-        }
-    }
-
     public partial class MainWindow : Window
     {
 
         string ProjektName = "";
-        string ProjektPfad = "h:\\Logo8_V81";
 
         public MainWindow()
         {
@@ -73,21 +53,26 @@ namespace Logo8_Starter
                 rdo.VerticalAlignment = VerticalAlignment.Top;
                 rdo.Checked += new RoutedEventHandler(radioButton_Checked);
 
-                if (Projekt.Contains("PLC_NONE_"))
+                if (Projekt.Contains("PLC_NONE_NONE"))
                 {
-                    TextLaenge = 15;
+                    TextLaenge = 25;
                     rdo.Content = Projekt.Substring(TextLaenge).Replace("_", " ");
                     rdo.Name = Projekt;
-                    StackPanel_PLC_NONE.Children.Add(rdo);
+                    StackPanel_PLC_NONE_NONE.Children.Add(rdo);
                 }
-                if (Projekt.Contains("BUG_NONE"))
+
+                if (Projekt.Contains("BUG_NONE_NONE"))
                 {
-                    TextLaenge = 15;
+                    TextLaenge = 24;
                     rdo.Content = Projekt.Substring(TextLaenge).Replace("_", " ");
                     rdo.Name = Projekt;
-                    StackPanel_BUG_NONE.Children.Add(rdo);
+                    StackPanel_BUG_NONE_NONE.Children.Add(rdo);
                 }
+
             }
+
+
+
 
         }
 
@@ -97,7 +82,12 @@ namespace Logo8_Starter
 
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
 
-            EigenschaftenAendern(ProjektStarten_BUG_NONE, ProjektStarten_PLC_NONE, "Enable", "-");
+            ProjektStarten_PLC_NONE_NONE.IsEnabled = true;
+            ProjektStarten_BUG_NONE_NONE.IsEnabled = true;
+
+            ProjektStarten_PLC_NONE_NONE.Background = new SolidColorBrush(Colors.Green);
+            ProjektStarten_BUG_NONE_NONE.Background = new SolidColorBrush(Colors.Green);
+
 
             ProjektName = rb.Name;
 
@@ -105,15 +95,17 @@ namespace Logo8_Starter
             string HtmlSeite = System.IO.File.ReadAllText(DateiName);
             string LeereHtmlSeite = "<!doctype html>   </html >";
 
-            if (rb.Name.Contains("PLC_NONE"))
-                Web_PLC_NONE.NavigateToString(HtmlSeite);
+            if (rb.Name.Contains("PLC_NONE_NONE"))
+                Web_PLC_NONE_NONE.NavigateToString(HtmlSeite);
             else
-                Web_PLC_NONE.NavigateToString(LeereHtmlSeite);
+                Web_PLC_NONE_NONE.NavigateToString(LeereHtmlSeite);
 
-            if (rb.Name.Contains("BUG_NONE"))
-                Web_BUG_NONE.NavigateToString(HtmlSeite);
+            if (rb.Name.Contains("BUG_NONE_NONE"))
+                Web_BUG_NONE_NONE.NavigateToString(HtmlSeite);
             else
-                Web_BUG_NONE.NavigateToString(LeereHtmlSeite);
+                Web_BUG_NONE_NONE.NavigateToString(LeereHtmlSeite);
+
+
 
         }
 
@@ -122,19 +114,18 @@ namespace Logo8_Starter
 
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
             string sourceDirectory = ParentDirectory.FullName + "\\" + ProjektName;
+            string targetDirectory = "h:\\Logo8";
 
-            EigenschaftenAendern(ProjektStarten_BUG_NONE, ProjektStarten_PLC_NONE, "Start", "Ordner " + ProjektPfad + " löschen");
-            if (System.IO.Directory.Exists(ProjektPfad)) System.IO.Directory.Delete(ProjektPfad, true);
+            if (System.IO.Directory.Exists(targetDirectory)) System.IO.Directory.Delete(targetDirectory, true);
+            System.IO.Directory.CreateDirectory(targetDirectory);
 
-            EigenschaftenAendern(ProjektStarten_BUG_NONE, ProjektStarten_PLC_NONE, "Start", "Ordner " + ProjektPfad + " erstellen");
-            System.IO.Directory.CreateDirectory(ProjektPfad);
+            Copy(sourceDirectory, targetDirectory);
 
-            EigenschaftenAendern(ProjektStarten_BUG_NONE, ProjektStarten_PLC_NONE, "Start", "Alle Dateien kopieren");
-            Copy(sourceDirectory, ProjektPfad);
+            // Process.Start("cmd.exe", "h:\\TwinCAT_V3\\start.cmd");
 
             Process proc = new Process();
-            proc.StartInfo.FileName = ProjektPfad + "\\start.cmd";
-            proc.StartInfo.WorkingDirectory = ProjektPfad;
+            proc.StartInfo.FileName = @"h:\Logo8\start.cmd";
+            proc.StartInfo.WorkingDirectory = @"h:\Logo8";
             proc.Start();
 
 
@@ -172,60 +163,16 @@ namespace Logo8_Starter
 
         private void TabControl_SelectionChanged(object sender, RoutedEventArgs e)
         {
+            ProjektStarten_PLC_NONE_NONE.Background = new SolidColorBrush(Colors.Gray);
+            ProjektStarten_BUG_NONE_NONE.Background = new SolidColorBrush(Colors.Gray);
 
-            EigenschaftenAendern(ProjektStarten_BUG_NONE, ProjektStarten_PLC_NONE, "Disable", "-");
+            ProjektStarten_PLC_NONE_NONE.IsEnabled = false;
+            ProjektStarten_BUG_NONE_NONE.IsEnabled = false;
 
             string LeereHtmlSeite = "<!doctype html>   </html >";
-            Web_PLC_NONE.NavigateToString(LeereHtmlSeite);
-            Web_BUG_NONE.NavigateToString(LeereHtmlSeite);
+            Web_PLC_NONE_NONE.NavigateToString(LeereHtmlSeite);
+            Web_BUG_NONE_NONE.NavigateToString(LeereHtmlSeite);
         }
-
-        private void EigenschaftenAendern(Button Knopf1, Button Knopf2, String ToDo, string Text)
-        {
-            switch (ToDo)
-            {
-                case "Enable":
-                    Knopf1.IsEnabled = true;
-                    Knopf2.IsEnabled = true;
-
-                    Knopf1.Background = new SolidColorBrush(Colors.Green);
-                    Knopf2.Background = new SolidColorBrush(Colors.Green);
-
-                    Knopf1.Refresh();
-                    Knopf2.Refresh();
-                    break;
-
-                case "Disable":
-                    Knopf1.Background = new SolidColorBrush(Colors.Gray);
-                    Knopf2.Background = new SolidColorBrush(Colors.Gray);
-
-                    Knopf1.IsEnabled = false;
-                    Knopf2.IsEnabled = false;
-
-                    Knopf1.Refresh();
-                    Knopf2.Refresh();
-                    break;
-
-                case "Start":
-                    Knopf1.Background = new SolidColorBrush(Colors.Yellow);
-                    Knopf2.Background = new SolidColorBrush(Colors.Yellow);
-
-                    Knopf1.Content = Text;
-                    Knopf2.Content = Text;
-
-                    Knopf1.Refresh();
-                    Knopf2.Refresh();
-                    break;
-
-                default:
-                    break;
-            }
-
-        }
-
-
-
-
 
     }
 }
