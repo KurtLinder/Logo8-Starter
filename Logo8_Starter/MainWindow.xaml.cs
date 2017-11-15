@@ -44,6 +44,7 @@ namespace Logo8_Starter
 
         string ProjektName = "";
         string ProjektPfad = "h:\\Logo8_V81";
+        List<RadioButton> RadioButtonList = new List<RadioButton>();
 
         public MainWindow()
         {
@@ -117,7 +118,7 @@ namespace Logo8_Starter
 
 
             foreach (string Projekt in ProjektVerzeichnis)
-            {       
+            {
 
                 string Sprache = "";
                 int StartBezeichnung = 0;
@@ -144,14 +145,16 @@ namespace Logo8_Starter
                 {
                     rdo.Content = Projekt.Substring(StartBezeichnung).Replace("_", " ") + Sprache;
                     rdo.Name = Projekt;
-                    StackPanel_PLC_NONE.Children.Add(rdo);
+                    StackPanel_PLC.Children.Add(rdo);
                 }
                 if (Projekt.Contains("BUG_"))
                 {
                     rdo.Content = Projekt.Substring(StartBezeichnung).Replace("_", " ") + Sprache;
                     rdo.Name = Projekt;
-                    StackPanel_BUG_NONE.Children.Add(rdo);
+                    StackPanel_BUG.Children.Add(rdo);
                 }
+
+                RadioButtonList.Add(rdo);
             }
 
         }
@@ -162,7 +165,7 @@ namespace Logo8_Starter
 
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
 
-            EigenschaftenAendern(ProjektStarten_BUG_NONE, ProjektStarten_PLC_NONE, "Enable", "-");
+            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "Enable", "-");
 
             ProjektName = rb.Name;
 
@@ -171,14 +174,14 @@ namespace Logo8_Starter
             string LeereHtmlSeite = "<!doctype html>   </html >";
 
             if (rb.Name.Contains("PLC_NONE"))
-                Web_PLC_NONE.NavigateToString(HtmlSeite);
+                Web_PLC.NavigateToString(HtmlSeite);
             else
-                Web_PLC_NONE.NavigateToString(LeereHtmlSeite);
+                Web_PLC.NavigateToString(LeereHtmlSeite);
 
             if (rb.Name.Contains("BUG_NONE"))
-                Web_BUG_NONE.NavigateToString(HtmlSeite);
+                Web_BUG.NavigateToString(HtmlSeite);
             else
-                Web_BUG_NONE.NavigateToString(LeereHtmlSeite);
+                Web_BUG.NavigateToString(LeereHtmlSeite);
 
         }
 
@@ -188,13 +191,13 @@ namespace Logo8_Starter
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
             string sourceDirectory = ParentDirectory.FullName + "\\" + ProjektName;
 
-            EigenschaftenAendern(ProjektStarten_BUG_NONE, ProjektStarten_PLC_NONE, "Start", "Ordner " + ProjektPfad + " löschen");
+            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "Start", "Ordner " + ProjektPfad + " löschen");
             if (System.IO.Directory.Exists(ProjektPfad)) System.IO.Directory.Delete(ProjektPfad, true);
 
-            EigenschaftenAendern(ProjektStarten_BUG_NONE, ProjektStarten_PLC_NONE, "Start", "Ordner " + ProjektPfad + " erstellen");
+            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "Start", "Ordner " + ProjektPfad + " erstellen");
             System.IO.Directory.CreateDirectory(ProjektPfad);
 
-            EigenschaftenAendern(ProjektStarten_BUG_NONE, ProjektStarten_PLC_NONE, "Start", "Alle Dateien kopieren");
+            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "Start", "Alle Dateien kopieren");
             Copy(sourceDirectory, ProjektPfad);
 
             Process proc = new Process();
@@ -236,17 +239,26 @@ namespace Logo8_Starter
         private void TabControl_SelectionChanged(object sender, RoutedEventArgs e)
         {
 
-            EigenschaftenAendern(ProjektStarten_BUG_NONE, ProjektStarten_PLC_NONE, "Disable", "-");
+
+            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "TabUmschalten", "-");
+            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "Disable", "-");
 
             string LeereHtmlSeite = "<!doctype html>   </html >";
-            Web_PLC_NONE.NavigateToString(LeereHtmlSeite);
-            Web_BUG_NONE.NavigateToString(LeereHtmlSeite);
+            Web_PLC.NavigateToString(LeereHtmlSeite);
+            Web_BUG.NavigateToString(LeereHtmlSeite);
         }
 
         private void EigenschaftenAendern(Button Knopf1, Button Knopf2, String ToDo, string Text)
         {
             switch (ToDo)
             {
+                case "TabUmschalten":
+                    foreach (RadioButton R_Button in RadioButtonList)
+                    {
+                        if (R_Button.IsChecked == true) R_Button.IsChecked = false;
+                    }
+                    break;
+
                 case "Enable":
                     Knopf1.IsEnabled = true;
                     Knopf2.IsEnabled = true;
@@ -283,7 +295,6 @@ namespace Logo8_Starter
                 default:
                     break;
             }
-
         }
 
 
