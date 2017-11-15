@@ -53,9 +53,60 @@ namespace Logo8_Starter
 
         public void ProjekteLesen()
         {
+
+            /*
+             * Aufbau der Projektnamen (Ordner)
+             * LOGO_PLC_WEB_FUP_Linearachse
+             * 
+             * _PLC_ oder  _BUG_    
+             * + _NC_
+             * + _HMI
+             * + _VISU_
+             * + _FIO_
+             * + _WEB_
+             * 
+             * _AWL_ oder _AS_ oder _FUP_ oder _KOP_ oder _SCL_ oder _ST_
+             * 
+             * */
+
+            var Sprachen = new List<Tuple<string, string>>
+                                {
+                                    Tuple.Create("AWL", "(AWL)"),
+                                    Tuple.Create("AS", "(AS)"),
+                                    Tuple.Create("FUP", "(FUP)"),
+                                    Tuple.Create("CFC", "(CFC)"),
+                                    Tuple.Create("SCL", "(SCL)"),
+                                    Tuple.Create("ST", "(ST)"),
+                                    Tuple.Create("KOP", "(KOP)")
+                                };
+
+            string[] EigenschaftenArray = { "_NC_", "_HMI_", "_VISU_", "_FIO_", "_WEB_" };
+
+            var Eigenschaften = new List<Tuple<string, string>>
+                                {
+                                    Tuple.Create("PLC", "PLC"),
+                                    Tuple.Create("BUG", "Bug"),
+                                    Tuple.Create("NC", "NC"),
+                                    Tuple.Create("HMI", "HMI"),
+                                    Tuple.Create("VISU", "Visu"),
+                                    Tuple.Create("WEB", "Web"),
+                                    Tuple.Create("FIO", "Factory I/O")
+                                };
+
+
+
+
+            var ProjekteListe = new Dictionary<string, List<string>>();
+
+
             List<string> ProjektVerzeichnis = new List<string>();
-            List<string> Projekte_PLC_NONE_NONE = new List<string>();
-            List<string> Projekte_BUG_NONE_NONE = new List<string>();
+            List<string> Projekte_PLC = new List<string>();
+            List<string> Projekte_BUG = new List<string>();
+
+
+
+
+
 
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
 
@@ -64,26 +115,40 @@ namespace Logo8_Starter
 
             ProjektVerzeichnis.Sort();
 
-            foreach (string Projekt in ProjektVerzeichnis)
-            {
-                int TextLaenge = 0;
 
+            foreach (string Projekt in ProjektVerzeichnis)
+            {       
+
+                string Sprache = "";
+                int StartBezeichnung = 0;
+
+                if (Projekt.Contains("KOP"))
+                {
+                    Sprache = " (KOP)";
+                    StartBezeichnung = 4 + Projekt.IndexOf("KOP");
+                }
+                else
+                {
+                    if (Projekt.Contains("FUP"))
+                    {
+                        Sprache = " (FUP)";
+                        StartBezeichnung = 4 + Projekt.IndexOf("FUP");
+                    }
+                }
                 RadioButton rdo = new RadioButton();
                 rdo.GroupName = "Logo8!";
                 rdo.VerticalAlignment = VerticalAlignment.Top;
                 rdo.Checked += new RoutedEventHandler(radioButton_Checked);
 
-                if (Projekt.Contains("PLC_NONE_"))
+                if (Projekt.Contains("PLC_"))
                 {
-                    TextLaenge = 15;
-                    rdo.Content = Projekt.Substring(TextLaenge).Replace("_", " ");
+                    rdo.Content = Projekt.Substring(StartBezeichnung).Replace("_", " ") + Sprache;
                     rdo.Name = Projekt;
                     StackPanel_PLC_NONE.Children.Add(rdo);
                 }
-                if (Projekt.Contains("BUG_NONE"))
+                if (Projekt.Contains("BUG_"))
                 {
-                    TextLaenge = 15;
-                    rdo.Content = Projekt.Substring(TextLaenge).Replace("_", " ");
+                    rdo.Content = Projekt.Substring(StartBezeichnung).Replace("_", " ") + Sprache;
                     rdo.Name = Projekt;
                     StackPanel_BUG_NONE.Children.Add(rdo);
                 }
@@ -136,8 +201,6 @@ namespace Logo8_Starter
             proc.StartInfo.FileName = ProjektPfad + "\\start.cmd";
             proc.StartInfo.WorkingDirectory = ProjektPfad;
             proc.Start();
-
-
         }
 
 
