@@ -34,7 +34,6 @@ namespace Logo8_Starter
             }
             catch (Exception exp)
             {
-
             }
         }
     }
@@ -94,19 +93,12 @@ namespace Logo8_Starter
                                     Tuple.Create("FIO", "Factory I/O")
                                 };
 
-
-
-
             var ProjekteListe = new Dictionary<string, List<string>>();
 
 
             List<string> ProjektVerzeichnis = new List<string>();
             List<string> Projekte_PLC = new List<string>();
             List<string> Projekte_BUG = new List<string>();
-
-
-
-
 
 
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
@@ -128,18 +120,18 @@ namespace Logo8_Starter
                     Sprache = " (KOP)";
                     StartBezeichnung = 4 + Projekt.IndexOf("KOP");
                 }
-                else
+
+                if (Projekt.Contains("FUP"))
                 {
-                    if (Projekt.Contains("FUP"))
-                    {
-                        Sprache = " (FUP)";
-                        StartBezeichnung = 4 + Projekt.IndexOf("FUP");
-                    }
+                    Sprache = " (FUP)";
+                    StartBezeichnung = 4 + Projekt.IndexOf("FUP");
                 }
+
                 RadioButton rdo = new RadioButton();
                 rdo.GroupName = "Logo8!";
                 rdo.VerticalAlignment = VerticalAlignment.Top;
                 rdo.Checked += new RoutedEventHandler(radioButton_Checked);
+                rdo.FontSize = 14;
 
                 if (Projekt.Contains("PLC_"))
                 {
@@ -239,8 +231,6 @@ namespace Logo8_Starter
         private void TabControl_SelectionChanged(object sender, RoutedEventArgs e)
         {
 
-
-            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "TabUmschalten", "-");
             EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "Disable", "-");
 
             string LeereHtmlSeite = "<!doctype html>   </html >";
@@ -252,12 +242,6 @@ namespace Logo8_Starter
         {
             switch (ToDo)
             {
-                case "TabUmschalten":
-                    foreach (RadioButton R_Button in RadioButtonList)
-                    {
-                        if (R_Button.IsChecked == true) R_Button.IsChecked = false;
-                    }
-                    break;
 
                 case "Enable":
                     Knopf1.IsEnabled = true;
@@ -271,6 +255,12 @@ namespace Logo8_Starter
                     break;
 
                 case "Disable":
+
+                    foreach (RadioButton R_Button in RadioButtonList)
+                    {
+                        if (R_Button.IsChecked == true) R_Button.IsChecked = false;
+                    }
+
                     Knopf1.Background = new SolidColorBrush(Colors.Gray);
                     Knopf2.Background = new SolidColorBrush(Colors.Gray);
 
@@ -296,10 +286,6 @@ namespace Logo8_Starter
                     break;
             }
         }
-
-
-
-
 
     }
 }
