@@ -157,7 +157,8 @@ namespace Logo8_Starter
 
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
 
-            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "Enable", "-");
+            DarstellungAendern(ProjektStarten_PLC, true, Colors.Green, "Projekt starten");
+            DarstellungAendern(ProjektStarten_BUG, true, Colors.Green, "Projekt starten");
 
             ProjektName = rb.Name;
 
@@ -183,15 +184,20 @@ namespace Logo8_Starter
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
             string sourceDirectory = ParentDirectory.FullName + "\\" + ProjektName;
 
-            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "Start", "Ordner " + ProjektPfad + " löschen");
+            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Ordner " + ProjektPfad + " löschen");
+            DarstellungAendern(ProjektStarten_BUG, true, Colors.Yellow, "Ordner " + ProjektPfad + " löschen");
             if (System.IO.Directory.Exists(ProjektPfad)) System.IO.Directory.Delete(ProjektPfad, true);
 
-            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "Start", "Ordner " + ProjektPfad + " erstellen");
+            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Ordner " + ProjektPfad + " erstellen");
+            DarstellungAendern(ProjektStarten_BUG, true, Colors.Yellow, "Ordner " + ProjektPfad + " erstellen");
             System.IO.Directory.CreateDirectory(ProjektPfad);
 
-            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "Start", "Alle Dateien kopieren");
+            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Alle Dateien kopieren");
+            DarstellungAendern(ProjektStarten_BUG, true, Colors.Yellow, "Alle Dateien kopieren");
             Copy(sourceDirectory, ProjektPfad);
 
+            DarstellungAendern(ProjektStarten_PLC, true, Colors.LawnGreen, "Projekt mit Logo!Soft öffnen");
+            DarstellungAendern(ProjektStarten_BUG, true, Colors.LawnGreen, "Projekt mit Logo!Soft öffnen");
             Process proc = new Process();
             proc.StartInfo.FileName = ProjektPfad + "\\start.cmd";
             proc.StartInfo.WorkingDirectory = ProjektPfad;
@@ -231,59 +237,29 @@ namespace Logo8_Starter
         private void TabControl_SelectionChanged(object sender, RoutedEventArgs e)
         {
 
-            EigenschaftenAendern(ProjektStarten_BUG, ProjektStarten_PLC, "Disable", "-");
+            DarstellungAendern(ProjektStarten_PLC, false, Colors.Gray, "Projekt auswählen");
+            DarstellungAendern(ProjektStarten_BUG, false, Colors.Gray, "Projekt auswählen");
+            AlleRadioButtonsDeaktivieren();
+
 
             string LeereHtmlSeite = "<!doctype html>   </html >";
             Web_PLC.NavigateToString(LeereHtmlSeite);
             Web_BUG.NavigateToString(LeereHtmlSeite);
         }
 
-        private void EigenschaftenAendern(Button Knopf1, Button Knopf2, String ToDo, string Text)
+        private void DarstellungAendern(Button Knopf, bool Enable, Color Farbe, string Text)
         {
-            switch (ToDo)
+            Knopf.IsEnabled = Enable;
+            Knopf.Background = new SolidColorBrush(Farbe);
+            Knopf.Content = Text;
+            Knopf.Refresh();
+        }
+
+        private void AlleRadioButtonsDeaktivieren()
+        {
+            foreach (RadioButton R_Button in RadioButtonList)
             {
-
-                case "Enable":
-                    Knopf1.IsEnabled = true;
-                    Knopf2.IsEnabled = true;
-
-                    Knopf1.Background = new SolidColorBrush(Colors.Green);
-                    Knopf2.Background = new SolidColorBrush(Colors.Green);
-
-                    Knopf1.Refresh();
-                    Knopf2.Refresh();
-                    break;
-
-                case "Disable":
-
-                    foreach (RadioButton R_Button in RadioButtonList)
-                    {
-                        if (R_Button.IsChecked == true) R_Button.IsChecked = false;
-                    }
-
-                    Knopf1.Background = new SolidColorBrush(Colors.Gray);
-                    Knopf2.Background = new SolidColorBrush(Colors.Gray);
-
-                    Knopf1.IsEnabled = false;
-                    Knopf2.IsEnabled = false;
-
-                    Knopf1.Refresh();
-                    Knopf2.Refresh();
-                    break;
-
-                case "Start":
-                    Knopf1.Background = new SolidColorBrush(Colors.Yellow);
-                    Knopf2.Background = new SolidColorBrush(Colors.Yellow);
-
-                    Knopf1.Content = Text;
-                    Knopf2.Content = Text;
-
-                    Knopf1.Refresh();
-                    Knopf2.Refresh();
-                    break;
-
-                default:
-                    break;
+                if (R_Button.IsChecked == true) R_Button.IsChecked = false;
             }
         }
 
