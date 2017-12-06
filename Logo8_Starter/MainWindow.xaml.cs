@@ -166,12 +166,12 @@ namespace Logo8_Starter
             string HtmlSeite = System.IO.File.ReadAllText(DateiName);
             string LeereHtmlSeite = "<!doctype html>   </html >";
 
-            if (rb.Name.Contains("PLC_NONE"))
+            if (rb.Name.Contains("PLC"))
                 Web_PLC.NavigateToString(HtmlSeite);
             else
                 Web_PLC.NavigateToString(LeereHtmlSeite);
 
-            if (rb.Name.Contains("BUG_NONE"))
+            if (rb.Name.Contains("BUG"))
                 Web_BUG.NavigateToString(HtmlSeite);
             else
                 Web_BUG.NavigateToString(LeereHtmlSeite);
