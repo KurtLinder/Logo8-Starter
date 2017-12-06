@@ -1,3 +1,3 @@
 h:
-cd Logo8V81
-start Linearachse.lsc
+cd h:\Logo8V81
+start Linearachse.lnp

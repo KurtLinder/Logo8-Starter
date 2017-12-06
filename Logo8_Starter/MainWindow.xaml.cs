@@ -42,7 +42,7 @@ namespace Logo8_Starter
     {
 
         string ProjektName = "";
-        string ProjektPfad = "h:\\Logo8_V81";
+        string ProjektPfad = "h:\\Logo8V81";
         List<RadioButton> RadioButtonList = new List<RadioButton>();
 
         public MainWindow()
