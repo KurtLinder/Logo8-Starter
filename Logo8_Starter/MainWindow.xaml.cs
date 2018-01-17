@@ -44,6 +44,7 @@ namespace Logo8_Starter
         string ProjektName = "";
         string ProjektPfad = "h:\\Logo8V81";
         List<RadioButton> RadioButtonList = new List<RadioButton>();
+        List<Button> ButtonListe = new List<Button>();
 
         public MainWindow()
         {
@@ -68,12 +69,13 @@ namespace Logo8_Starter
              * _AWL_ oder _AS_ oder _FUP_ oder _KOP_ oder _SCL_ oder _ST_
              * 
              * */
+            ButtonListe.Add(ProjektStarten_BUG);
+            ButtonListe.Add(ProjektStarten_PLC);
 
             // Name Komplett, kurz, Sprache, Anfang
             List<Tuple<string, string, string>> TupleList_PLC = new List<Tuple<string, string, string>>();
             List<Tuple<string, string, string>> TupleList_BUG = new List<Tuple<string, string, string>>();
-
-
+            
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
 
             foreach (System.IO.DirectoryInfo d in ParentDirectory.GetDirectories())
@@ -135,7 +137,6 @@ namespace Logo8_Starter
                 rdo.Name = Ordner;
                 StackPanel.Children.Add(rdo);
             }
-
         }
 
         private void radioButton_Checked(object sender, RoutedEventArgs e)
@@ -144,9 +145,7 @@ namespace Logo8_Starter
 
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
 
-            DarstellungAendern(ProjektStarten_BUG, true, Colors.Green, "Projekt starten");
-            DarstellungAendern(ProjektStarten_PLC, true, Colors.Green, "Projekt starten");
-
+            DarstellungAendernListe(ButtonListe, true, Colors.Green, "Projekt starten");
             ProjektName = rb.Name;
 
             string DateiName = ParentDirectory.FullName + "\\" + rb.Name + "\\index.html";
@@ -158,13 +157,11 @@ namespace Logo8_Starter
 
             if (rb.Name.Contains("PLC"))
             {
-     Web_PLC.NavigateToString(HtmlSeite);
-               
+                Web_PLC.NavigateToString(HtmlSeite);
             }
             else
             {
                 if (rb.Name.Contains("BUG")) Web_BUG.NavigateToString(HtmlSeite);
-                //bei Bug gibt es keine Unterkategorien
             }
         }
 
@@ -174,21 +171,16 @@ namespace Logo8_Starter
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
             string sourceDirectory = ParentDirectory.FullName + "\\" + ProjektName;
 
-
-            DarstellungAendern(ProjektStarten_BUG, true, Colors.Yellow, "Ordner " + ProjektPfad + " löschen");
-            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Ordner " + ProjektPfad + " löschen");
+            DarstellungAendernListe(ButtonListe, true, Colors.Yellow, "Ordner " + ProjektPfad + " löschen");
             if (System.IO.Directory.Exists(ProjektPfad)) System.IO.Directory.Delete(ProjektPfad, true);
 
-            DarstellungAendern(ProjektStarten_BUG, true, Colors.Yellow, "Ordner " + ProjektPfad + " erstellen");
-            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Ordner " + ProjektPfad + " erstellen");
+            DarstellungAendernListe(ButtonListe, true, Colors.Yellow, "Ordner " + ProjektPfad + " erstellen");
             System.IO.Directory.CreateDirectory(ProjektPfad);
 
-            DarstellungAendern(ProjektStarten_BUG, true, Colors.Yellow, "Alle Dateien kopieren");
-            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Alle Dateien kopieren");
+            DarstellungAendernListe(ButtonListe, true, Colors.Yellow, "Alle Dateien kopieren");
             Copy(sourceDirectory, ProjektPfad);
 
-            DarstellungAendern(ProjektStarten_BUG, true, Colors.LawnGreen, "Projekt mit LogoSoft8! öffnen");
-            DarstellungAendern(ProjektStarten_PLC, true, Colors.LawnGreen, "Projekt mit LogoSoft8! öffnen");
+            DarstellungAendernListe(ButtonListe, true, Colors.LawnGreen, "Projekt mit TwinCAT V3 öffnen");
             Process proc = new Process();
             proc.StartInfo.FileName = ProjektPfad + "\\start.cmd";
             proc.StartInfo.WorkingDirectory = ProjektPfad;
@@ -218,19 +210,15 @@ namespace Logo8_Starter
             // Copy each subdirectory using recursion.
             foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
             {
-                DirectoryInfo nextTargetSubDir =
-                    target.CreateSubdirectory(diSourceSubDir.Name);
+                DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
                 CopyAll(diSourceSubDir, nextTargetSubDir);
             }
         }
 
         private void TabControl_SelectionChanged(object sender, RoutedEventArgs e)
         {
-
-            DarstellungAendern(ProjektStarten_BUG, false, Colors.Gray, "Projekt auswählen");
-            DarstellungAendern(ProjektStarten_PLC, false, Colors.Gray, "Projekt auswählen");
+            DarstellungAendernListe(ButtonListe, false, Colors.Gray, "Projekt auswählen");
             AlleRadioButtonsDeaktivieren();
-
 
             string LeereHtmlSeite = "<!doctype html>   </html >";
             Web_PLC.NavigateToString(LeereHtmlSeite);
@@ -238,13 +226,17 @@ namespace Logo8_Starter
         }
 
 
-        private void DarstellungAendern(Button Knopf, bool Enable, Color Farbe, string Text)
+        private void DarstellungAendernListe(List<Button> KnopfListe, bool Enable, Color Farbe, string Text)
         {
-            Knopf.IsEnabled = Enable;
-            Knopf.Background = new SolidColorBrush(Farbe);
-            Knopf.Content = Text;
-            Knopf.Refresh();
+            foreach (Button Knopf in KnopfListe)
+            {
+                Knopf.IsEnabled = Enable;
+                Knopf.Background = new SolidColorBrush(Farbe);
+                Knopf.Content = Text;
+                Knopf.Refresh();
+            }
         }
+
 
         private void AlleRadioButtonsDeaktivieren()
         {
