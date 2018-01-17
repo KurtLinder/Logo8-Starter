@@ -69,63 +69,60 @@ namespace Logo8_Starter
              * 
              * */
 
-            var Sprachen = new List<Tuple<string, string>>
-                                {
-                                    Tuple.Create("AWL", "(AWL)"),
-                                    Tuple.Create("AS", "(AS)"),
-                                    Tuple.Create("FUP", "(FUP)"),
-                                    Tuple.Create("CFC", "(CFC)"),
-                                    Tuple.Create("SCL", "(SCL)"),
-                                    Tuple.Create("ST", "(ST)"),
-                                    Tuple.Create("KOP", "(KOP)")
-                                };
-
-            string[] EigenschaftenArray = { "_NC_", "_HMI_", "_VISU_", "_FIO_", "_WEB_" };
-
-            var Eigenschaften = new List<Tuple<string, string>>
-                                {
-                                    Tuple.Create("PLC", "PLC"),
-                                    Tuple.Create("BUG", "Bug"),
-                                    Tuple.Create("NC", "NC"),
-                                    Tuple.Create("HMI", "HMI"),
-                                    Tuple.Create("VISU", "Visu"),
-                                    Tuple.Create("WEB", "Web"),
-                                    Tuple.Create("FIO", "Factory I/O")
-                                };
-
-            var ProjekteListe = new Dictionary<string, List<string>>();
-
-
-            List<string> ProjektVerzeichnis = new List<string>();
-            List<string> Projekte_PLC = new List<string>();
-            List<string> Projekte_BUG = new List<string>();
+            // Name Komplett, kurz, Sprache, Anfang
+            List<Tuple<string, string, string>> TupleList_PLC = new List<Tuple<string, string, string>>();
+            List<Tuple<string, string, string>> TupleList_BUG = new List<Tuple<string, string, string>>();
 
 
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
 
             foreach (System.IO.DirectoryInfo d in ParentDirectory.GetDirectories())
-                ProjektVerzeichnis.Add(d.Name);
-
-            ProjektVerzeichnis.Sort();
-
-
-            foreach (string Projekt in ProjektVerzeichnis)
             {
-
+                string OrdnerName = d.Name;
                 string Sprache = "";
                 int StartBezeichnung = 0;
 
-                if (Projekt.Contains("KOP"))
+                if (OrdnerName.Contains("FUP"))
                 {
-                    Sprache = " (KOP)";
-                    StartBezeichnung = 4 + Projekt.IndexOf("KOP");
+                    Sprache = "FUP";
+                    StartBezeichnung = 4 + OrdnerName.IndexOf("FUP");
+                }
+                if (OrdnerName.Contains("KOP"))
+                {
+                    Sprache = "KOP";
+                    StartBezeichnung = 4 + OrdnerName.IndexOf("KOP");
                 }
 
-                if (Projekt.Contains("FUP"))
+
+                if (d.Name.Contains("PLC"))
                 {
-                    Sprache = " (FUP)";
-                    StartBezeichnung = 4 + Projekt.IndexOf("FUP");
+                    // nur PLC und sonst nichts
+                    Tuple<string, string, string> TplEintrag = new Tuple<string, string, string>(OrdnerName.Substring(StartBezeichnung), Sprache, OrdnerName);
+                    TupleList_PLC.Add(TplEintrag);
                 }
+                else
+                {
+                    // Es gibt momentan noch keine Gruppe bei den Bugs
+                    Tuple<string, string, string> TplEintrag = new Tuple<string, string, string>(OrdnerName.Substring(StartBezeichnung), Sprache, OrdnerName);
+                    TupleList_BUG.Add(TplEintrag);
+                }
+
+            } // Ende foreach
+
+            TupleList_PLC.Sort();
+            TupleList_BUG.Sort();
+
+            TabMitInhaltFuellen(TupleList_PLC, StackPanel_PLC);
+            TabMitInhaltFuellen(TupleList_BUG, StackPanel_BUG);
+        }
+
+        private void TabMitInhaltFuellen(List<Tuple<string, string, string>> Projekte, System.Windows.Controls.StackPanel StackPanel)
+        {
+            foreach (Tuple<string, string, string> Projekt in Projekte)
+            {
+                string Bezeichnung = Projekt.Item1;
+                string Sprache = Projekt.Item2;
+                string Ordner = Projekt.Item3;
 
                 RadioButton rdo = new RadioButton();
                 rdo.GroupName = "Logo8!";
@@ -133,20 +130,10 @@ namespace Logo8_Starter
                 rdo.Checked += new RoutedEventHandler(radioButton_Checked);
                 rdo.FontSize = 14;
 
-                if (Projekt.Contains("PLC_"))
-                {
-                    rdo.Content = Projekt.Substring(StartBezeichnung).Replace("_", " ") + Sprache;
-                    rdo.Name = Projekt;
-                    StackPanel_PLC.Children.Add(rdo);
-                }
-                if (Projekt.Contains("BUG_"))
-                {
-                    rdo.Content = Projekt.Substring(StartBezeichnung).Replace("_", " ") + Sprache;
-                    rdo.Name = Projekt;
-                    StackPanel_BUG.Children.Add(rdo);
-                }
-
-                RadioButtonList.Add(rdo);
+                // nur PLC und sonst nichts
+                rdo.Content = Bezeichnung + " (" + Sprache + ")";
+                rdo.Name = Ordner;
+                StackPanel.Children.Add(rdo);
             }
 
         }
@@ -157,8 +144,8 @@ namespace Logo8_Starter
 
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
 
-            DarstellungAendern(ProjektStarten_PLC, true, Colors.Green, "Projekt starten");
             DarstellungAendern(ProjektStarten_BUG, true, Colors.Green, "Projekt starten");
+            DarstellungAendern(ProjektStarten_PLC, true, Colors.Green, "Projekt starten");
 
             ProjektName = rb.Name;
 
@@ -166,16 +153,19 @@ namespace Logo8_Starter
             string HtmlSeite = System.IO.File.ReadAllText(DateiName);
             string LeereHtmlSeite = "<!doctype html>   </html >";
 
+            Web_PLC.NavigateToString(LeereHtmlSeite);
+            Web_BUG.NavigateToString(LeereHtmlSeite);
+
             if (rb.Name.Contains("PLC"))
-                Web_PLC.NavigateToString(HtmlSeite);
+            {
+     Web_PLC.NavigateToString(HtmlSeite);
+               
+            }
             else
-                Web_PLC.NavigateToString(LeereHtmlSeite);
-
-            if (rb.Name.Contains("BUG"))
-                Web_BUG.NavigateToString(HtmlSeite);
-            else
-                Web_BUG.NavigateToString(LeereHtmlSeite);
-
+            {
+                if (rb.Name.Contains("BUG")) Web_BUG.NavigateToString(HtmlSeite);
+                //bei Bug gibt es keine Unterkategorien
+            }
         }
 
         private void ProjektStarten(object sender, RoutedEventArgs e)
@@ -184,20 +174,21 @@ namespace Logo8_Starter
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
             string sourceDirectory = ParentDirectory.FullName + "\\" + ProjektName;
 
-            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Ordner " + ProjektPfad + " löschen");
+
             DarstellungAendern(ProjektStarten_BUG, true, Colors.Yellow, "Ordner " + ProjektPfad + " löschen");
+            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Ordner " + ProjektPfad + " löschen");
             if (System.IO.Directory.Exists(ProjektPfad)) System.IO.Directory.Delete(ProjektPfad, true);
 
-            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Ordner " + ProjektPfad + " erstellen");
             DarstellungAendern(ProjektStarten_BUG, true, Colors.Yellow, "Ordner " + ProjektPfad + " erstellen");
+            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Ordner " + ProjektPfad + " erstellen");
             System.IO.Directory.CreateDirectory(ProjektPfad);
 
-            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Alle Dateien kopieren");
             DarstellungAendern(ProjektStarten_BUG, true, Colors.Yellow, "Alle Dateien kopieren");
+            DarstellungAendern(ProjektStarten_PLC, true, Colors.Yellow, "Alle Dateien kopieren");
             Copy(sourceDirectory, ProjektPfad);
 
-            DarstellungAendern(ProjektStarten_PLC, true, Colors.LawnGreen, "Projekt mit Logo!Soft öffnen");
-            DarstellungAendern(ProjektStarten_BUG, true, Colors.LawnGreen, "Projekt mit Logo!Soft öffnen");
+            DarstellungAendern(ProjektStarten_BUG, true, Colors.LawnGreen, "Projekt mit LogoSoft8! öffnen");
+            DarstellungAendern(ProjektStarten_PLC, true, Colors.LawnGreen, "Projekt mit LogoSoft8! öffnen");
             Process proc = new Process();
             proc.StartInfo.FileName = ProjektPfad + "\\start.cmd";
             proc.StartInfo.WorkingDirectory = ProjektPfad;
@@ -233,12 +224,11 @@ namespace Logo8_Starter
             }
         }
 
-
         private void TabControl_SelectionChanged(object sender, RoutedEventArgs e)
         {
 
-            DarstellungAendern(ProjektStarten_PLC, false, Colors.Gray, "Projekt auswählen");
             DarstellungAendern(ProjektStarten_BUG, false, Colors.Gray, "Projekt auswählen");
+            DarstellungAendern(ProjektStarten_PLC, false, Colors.Gray, "Projekt auswählen");
             AlleRadioButtonsDeaktivieren();
 
 
@@ -246,6 +236,7 @@ namespace Logo8_Starter
             Web_PLC.NavigateToString(LeereHtmlSeite);
             Web_BUG.NavigateToString(LeereHtmlSeite);
         }
+
 
         private void DarstellungAendern(Button Knopf, bool Enable, Color Farbe, string Text)
         {
@@ -265,4 +256,3 @@ namespace Logo8_Starter
 
     }
 }
-
