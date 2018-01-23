@@ -34,6 +34,7 @@ namespace Logo8_Starter
             }
             catch (Exception exp)
             {
+                Console.WriteLine("{0} Exception 1 caught.", exp);
             }
         }
     }
@@ -75,7 +76,7 @@ namespace Logo8_Starter
             // Name Komplett, kurz, Sprache, Anfang
             List<Tuple<string, string, string>> TupleList_PLC = new List<Tuple<string, string, string>>();
             List<Tuple<string, string, string>> TupleList_BUG = new List<Tuple<string, string, string>>();
-            
+
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
 
             foreach (System.IO.DirectoryInfo d in ParentDirectory.GetDirectories())
@@ -122,10 +123,6 @@ namespace Logo8_Starter
         {
             foreach (Tuple<string, string, string> Projekt in Projekte)
             {
-                string Bezeichnung = Projekt.Item1;
-                string Sprache = Projekt.Item2;
-                string Ordner = Projekt.Item3;
-
                 RadioButton rdo = new RadioButton();
                 rdo.GroupName = "Logo8!";
                 rdo.VerticalAlignment = VerticalAlignment.Top;
@@ -133,8 +130,8 @@ namespace Logo8_Starter
                 rdo.FontSize = 14;
 
                 // nur PLC und sonst nichts
-                rdo.Content = Bezeichnung + " (" + Sprache + ")";
-                rdo.Name = Ordner;
+                rdo.Content = Projekt.Item1 + " (" + Projekt.Item2 + ")";
+                rdo.Name = Projekt.Item3;
                 StackPanel.Children.Add(rdo);
             }
         }
@@ -171,20 +168,49 @@ namespace Logo8_Starter
             System.IO.DirectoryInfo ParentDirectory = new System.IO.DirectoryInfo("Projekte");
             string sourceDirectory = ParentDirectory.FullName + "\\" + ProjektName;
 
-            DarstellungAendernListe(ButtonListe, true, Colors.Yellow, "Ordner " + ProjektPfad + " löschen");
-            if (System.IO.Directory.Exists(ProjektPfad)) System.IO.Directory.Delete(ProjektPfad, true);
+            try
+            {
+                DarstellungAendernListe(ButtonListe, true, Colors.Yellow, "Ordner " + ProjektPfad + " löschen");
+                if (System.IO.Directory.Exists(ProjektPfad)) System.IO.Directory.Delete(ProjektPfad, true);
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine("{0} Exception 2 caught.", exp);
+            }
 
-            DarstellungAendernListe(ButtonListe, true, Colors.Yellow, "Ordner " + ProjektPfad + " erstellen");
-            System.IO.Directory.CreateDirectory(ProjektPfad);
+            try
+            {
+                DarstellungAendernListe(ButtonListe, true, Colors.Yellow, "Ordner " + ProjektPfad + " erstellen");
+                System.IO.Directory.CreateDirectory(ProjektPfad);
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine("{0} Exception 3 caught.", exp);
+            }
 
-            DarstellungAendernListe(ButtonListe, true, Colors.Yellow, "Alle Dateien kopieren");
-            Copy(sourceDirectory, ProjektPfad);
+            try
+            {
+                DarstellungAendernListe(ButtonListe, true, Colors.Yellow, "Alle Dateien kopieren");
+                Copy(sourceDirectory, ProjektPfad);
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine("{0} Exception 4 caught.", exp);
+            }
 
-            DarstellungAendernListe(ButtonListe, true, Colors.LawnGreen, "Projekt mit TwinCAT V3 öffnen");
-            Process proc = new Process();
-            proc.StartInfo.FileName = ProjektPfad + "\\start.cmd";
-            proc.StartInfo.WorkingDirectory = ProjektPfad;
-            proc.Start();
+            try
+            {
+                DarstellungAendernListe(ButtonListe, true, Colors.LawnGreen, "Projekt mit TwinCAT V3 öffnen");
+                Process proc = new Process();
+                proc.StartInfo.FileName = ProjektPfad + "\\start.cmd";
+                proc.StartInfo.WorkingDirectory = ProjektPfad;
+                proc.Start();
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine("{0} Exception 5 caught.", exp);
+            }
+
         }
 
 
