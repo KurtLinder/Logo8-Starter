@@ -200,7 +200,7 @@ namespace Logo8_Starter
 
             try
             {
-                DarstellungAendernListe(ButtonListe, true, Colors.LawnGreen, "Projekt mit TwinCAT V3 öffnen");
+                DarstellungAendernListe(ButtonListe, true, Colors.LawnGreen, "Projekt mit Logo8! öffnen");
                 Process proc = new Process();
                 proc.StartInfo.FileName = ProjektPfad + "\\start.cmd";
                 proc.StartInfo.WorkingDirectory = ProjektPfad;
