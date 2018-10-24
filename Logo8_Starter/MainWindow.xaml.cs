@@ -41,7 +41,7 @@ namespace Logo8_Starter
 
     public partial class MainWindow : Window
     {
-
+        bool AnzeigeAktualisieren = false;
         string ProjektName = "";
         string ProjektPfad = "h:\\Logo8V81";
         List<RadioButton> RadioButtonList = new List<RadioButton>();
@@ -52,6 +52,7 @@ namespace Logo8_Starter
             InitializeComponent();
             ProjekteLesen();
         }
+
 
         public void ProjekteLesen()
         {
@@ -70,6 +71,14 @@ namespace Logo8_Starter
              * _AWL_ oder _AS_ oder _FUP_ oder _KOP_ oder _SCL_ oder _ST_
              * 
              * */
+
+
+            // Zuerst die Listen löschen
+
+            StackPanel_PLC.Children.Clear();
+            StackPanel_BUG.Children.Clear();
+
+            //
             ButtonListe.Add(ProjektStarten_BUG);
             ButtonListe.Add(ProjektStarten_PLC);
 
@@ -84,31 +93,43 @@ namespace Logo8_Starter
                 string OrdnerName = d.Name;
                 string Sprache = "";
                 int StartBezeichnung = 0;
+                bool Anzeigen = false;
 
                 if (OrdnerName.Contains("FUP"))
                 {
+                    if (Checkbox_FUP.IsChecked.Value)
+                    {
+                        Anzeigen = true;
+                    }
                     Sprache = "FUP";
                     StartBezeichnung = 4 + OrdnerName.IndexOf("FUP");
                 }
                 if (OrdnerName.Contains("KOP"))
                 {
+                    if (Checkbox_KOP.IsChecked.Value)
+                    {
+                        Anzeigen = true;
+                    }
                     Sprache = "KOP";
                     StartBezeichnung = 4 + OrdnerName.IndexOf("KOP");
                 }
 
+                if (Anzeigen)
+                {
+                    if (d.Name.Contains("PLC"))
+                    {
+                        // nur PLC und sonst nichts
+                        Tuple<string, string, string> TplEintrag = new Tuple<string, string, string>(OrdnerName.Substring(StartBezeichnung), Sprache, OrdnerName);
+                        TupleList_PLC.Add(TplEintrag);
+                    }
+                    else
+                    {
+                        // Es gibt momentan noch keine Gruppe bei den Bugs
+                        Tuple<string, string, string> TplEintrag = new Tuple<string, string, string>(OrdnerName.Substring(StartBezeichnung), Sprache, OrdnerName);
+                        TupleList_BUG.Add(TplEintrag);
+                    }
+                }
 
-                if (d.Name.Contains("PLC"))
-                {
-                    // nur PLC und sonst nichts
-                    Tuple<string, string, string> TplEintrag = new Tuple<string, string, string>(OrdnerName.Substring(StartBezeichnung), Sprache, OrdnerName);
-                    TupleList_PLC.Add(TplEintrag);
-                }
-                else
-                {
-                    // Es gibt momentan noch keine Gruppe bei den Bugs
-                    Tuple<string, string, string> TplEintrag = new Tuple<string, string, string>(OrdnerName.Substring(StartBezeichnung), Sprache, OrdnerName);
-                    TupleList_BUG.Add(TplEintrag);
-                }
 
             } // Ende foreach
 
@@ -117,6 +138,8 @@ namespace Logo8_Starter
 
             TabMitInhaltFuellen(TupleList_PLC, StackPanel_PLC);
             TabMitInhaltFuellen(TupleList_BUG, StackPanel_BUG);
+
+            AnzeigeAktualisieren = true;    
         }
 
         private void TabMitInhaltFuellen(List<Tuple<string, string, string>> Projekte, System.Windows.Controls.StackPanel StackPanel)
@@ -272,5 +295,14 @@ namespace Logo8_Starter
             }
         }
 
+        private void Klick_CheckBox_KOP(object sender, RoutedEventArgs e)
+        {
+            if (AnzeigeAktualisieren) ProjekteLesen();
+        }
+
+        private void Klick_CheckBox_FUP(object sender, RoutedEventArgs e)
+        {
+            if (AnzeigeAktualisieren) ProjekteLesen();
+        }
     }
 }
