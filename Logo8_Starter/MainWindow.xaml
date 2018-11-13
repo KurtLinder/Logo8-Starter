@@ -6,21 +6,21 @@
         xmlns:local="clr-namespace:Logo8_Starter"
         mc:Ignorable="d"
         Title="Logo8! Starter" Width="1200" Height="800">
-    <Grid Margin="0,2,2,8">
+    <Grid Margin="5,5,5,5">
         <Label Content="V1.2" HorizontalAlignment="Right" Height="25" VerticalAlignment="Top" Width="35" Margin="0,0,15,0"/>
         <CheckBox x:Name="Checkbox_KOP" Content="KOP" HorizontalAlignment="Left" Height="15" Margin="70,10,0,0" VerticalAlignment="Top" Width="50" IsChecked="True" Unchecked="Klick_CheckBox_KOP" Checked="Klick_CheckBox_KOP"/>
         <CheckBox x:Name="Checkbox_FUP" Content="FUP" HorizontalAlignment="Left" Height="15" Margin="10,10,0,0" VerticalAlignment="Top" Width="50" IsChecked="True" Unchecked="Klick_CheckBox_FUP" Checked="Klick_CheckBox_FUP"/>
-        <TabControl x:Name="tabControl" Margin="10,40,15,10" SelectionChanged="TabControl_SelectionChanged" HorizontalContentAlignment="Left" VerticalContentAlignment="Top">
+        <TabControl x:Name="tabControl" Margin="10,40,10,10" SelectionChanged="TabControl_SelectionChanged" HorizontalContentAlignment="Left" VerticalContentAlignment="Top">
             <TabItem Header="Logo8!" FontSize="14">
                 <Grid x:Name="Tab_PLC" Background="#FFE5E5E5">
-                    <StackPanel x:Name="StackPanel_PLC" Margin="10,10,0,10" Width="400" HorizontalAlignment="Left" MinHeight="200"/>
+                    <StackPanel x:Name="StackPanel_PLC" Margin="10,10,10,10" Width="400" HorizontalAlignment="Left" MinHeight="200"/>
                     <WebBrowser x:Name="Web_PLC" Margin="300,50,10,10" MinWidth="200" MinHeight="200"/>
                     <Button x:Name="ProjektStarten_PLC" Content="Projekt starten" Height="30" Margin="300,10,10,0" IsEnabled="False" Click="ProjektStarten" FontSize="16" MinWidth="400" MinHeight="30" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Logo8! mit Bugs" FontSize="14">
                 <Grid x:Name="Tab_BUG" Background="#FFE5E5E5">
-                    <StackPanel x:Name="StackPanel_BUG" Margin="10,10,0,10" Width="400" HorizontalAlignment="Left" MinHeight="200"/>
+                    <StackPanel x:Name="StackPanel_BUG" Margin="10,10,10,10" Width="400" HorizontalAlignment="Left" MinHeight="200"/>
                     <WebBrowser x:Name="Web_BUG" Margin="300,50,10,10" MinWidth="200" MinHeight="200"/>
                     <Button x:Name="ProjektStarten_BUG" Content="Projekt starten" Height="30" Margin="300,10,10,0" IsEnabled="False" Click="ProjektStarten" FontSize="16" MinWidth="400" MinHeight="30" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" VerticalAlignment="Top"/>
                 </Grid>

@@ -74,7 +74,6 @@ namespace Logo8_Starter
 
 
             // Zuerst die Listen löschen
-
             StackPanel_PLC.Children.Clear();
             StackPanel_BUG.Children.Clear();
 
