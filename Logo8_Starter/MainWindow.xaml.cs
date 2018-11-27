@@ -138,7 +138,7 @@ namespace Logo8_Starter
             TabMitInhaltFuellen(TupleList_PLC, StackPanel_PLC);
             TabMitInhaltFuellen(TupleList_BUG, StackPanel_BUG);
 
-            AnzeigeAktualisieren = true;    
+            AnzeigeAktualisieren = true;
         }
 
         private void TabMitInhaltFuellen(List<Tuple<string, string, string>> Projekte, System.Windows.Controls.StackPanel StackPanel)
@@ -167,9 +167,19 @@ namespace Logo8_Starter
             DarstellungAendernListe(ButtonListe, true, Colors.Green, "Projekt starten");
             ProjektName = rb.Name;
 
-            string DateiName = ParentDirectory.FullName + "\\" + rb.Name + "\\index.html";
-            string HtmlSeite = System.IO.File.ReadAllText(DateiName);
             string LeereHtmlSeite = "<!doctype html>   </html >";
+            string HtmlSeite = "";
+
+            string DateiName = ParentDirectory.FullName + "\\" + rb.Name + "\\index.html";
+            if (File.Exists(DateiName))
+            {
+                HtmlSeite = System.IO.File.ReadAllText(DateiName);
+            }
+            else
+            {
+                HtmlSeite = "<!doctype html>   </html >";
+            }
+
 
             Web_PLC.NavigateToString(LeereHtmlSeite);
             Web_BUG.NavigateToString(LeereHtmlSeite);
